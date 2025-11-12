@@ -100,42 +100,47 @@ DeviceProcessEvents
 
 ---
 
-🚩 **Flag 2 – Local Account Assessment**  
-🎯 **Objective:** Map user accounts and privileges available on the system.  
+🚩 **Flag 2 – Defense Disabling**  
+🎯 **Objective:** Find a file that was manually accessed and implies tampering with security settings.  
 📌 **Finding (answer):** `SHA256 = 9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** 2025-07-18T02:07:42Z  
-- **Process:** `"powershell.exe" whoami /all`  
-- **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
-💡 **Why it matters:** `whoami /all` reveals group memberships/privileges; classic recon to plan escalation.
+- **Host:** gab-intrn-vm 
+- **Timestamp:** 2025-10-09T12:34:59.1260624Z 
+- **Process:** explorer.exe
+- **Filename** DefenderTamperArtifact.lnk
+- **SHA256:** `3ec18510105244255bf8e3c4790ca2ff8fe3433bd433f9b0c7bd130868a38662`  
+💡 **Why it matters:** `Reveals tamper intent — attacker tries to simulate or spoof a change in security posture.`
 **KQL Query Used:**
 ```
-DeviceProcessEvents
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "who"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
+DeviceFileEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-01 06:00:00) .. datetime(2025-10-10 12:30:00))
+| where InitiatingProcessFileName has_cs "explorer.exe"
+| project TimeGenerated, InitiatingProcessFileName, FileName, FolderPath, ActionType
+| order by TimeGenerated asc
 ```
-<img width="824" height="264" alt="Screenshot 2025-08-17 215913" src="https://github.com/user-attachments/assets/166aa43f-47b0-4dba-8cd1-8dd7bf413c37" />
+<img width="824" height="264" alt="Screenshot 2025-08-17 215913" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/42ebc4f43667337c1214030f877b197eece1fbf8/screen%20captures/Assistance-F2.png" />
 
 ---
 
-🚩 **Flag 3 – Privileged Group Assessment**  
-🎯 **Objective:** Identify elevated accounts on the target system.  
-📌 **Finding (answer):** `"powershell.exe" net localgroup Administrators`  
+🚩 **Flag 3 – Quick Data Probe**  
+🎯 **Objective:** Spot brief, opportunistic checks for readily avialable sensitive content.  
+📌 **Finding (answer):** `"powershell.exe" -NoProfile -Sta -Command "try { Get-Clipboard | Out-Null } catch { }`  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** 2025-07-18T02:16:21Z  
+- **Host:** gab-intrn-vm   
+- **Timestamp:** 2025-10-09T12:50:39.955931Z 
 - **Process:** powershell.exe  
-- **CommandLine:** `"powershell.exe" net localgroup Administrators`  
+- **CommandLine:** `"powershell.exe" -NoProfile -Sta -Command "try { Get-Clipboard | Out-Null } catch { }"  
 - **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
-💡 **Why it matters:** Enumerating local Administrators identifies high‑value accounts to target for impersonation/persistence.
+💡 **Why it matters:** Attackers look for low-effort wins first; these quick probes often procede broader reconnaissance.
 **KQL Query Used:**
 ```
 DeviceProcessEvents
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "net"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-01 06:00:00) .. datetime(2025-10-10 12:30:00))
+| where tolower(ProcessCommandLine) has_any ("clipboard","get-clipboard","set-clipboard","system.windows.forms.clipboard","clipboard::gettext","clipboard::settext")
+| project TimeGenerated, FileName, InitiatingProcessFileName, ProcessCommandLine,SHA256
+| order by TimeGenerated asc
 ```
 <img width="867" height="343" alt="Screenshot 2025-08-17 215559" src="https://github.com/user-attachments/assets/99a871c3-c398-42dc-b375-91b7e41851bf" />
 
