@@ -81,7 +81,8 @@ hits
 - **Process:** powershell.exe  
 - **CommandLine:** `powershell -ExecutionPolicy Unrestricted -File script0.ps1`  
 - **SHA256:** `badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0`  
-💡 **Why it matters:** Pinpointing the first unusual execution helps you anchor the timeline and follow the actor’s parent/child process chain.
+  **Why it matters:** Pinpointing the first unusual execution helps you anchor the timeline and follow the actor’s parent/child process chain.
+  
 **KQL Query Used:**
 ```
 DeviceProcessEvents
