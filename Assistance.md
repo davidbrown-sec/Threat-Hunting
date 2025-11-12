@@ -110,6 +110,7 @@ DeviceProcessEvents
 - **Filename** DefenderTamperArtifact.lnk
 - **SHA256:** `3ec18510105244255bf8e3c4790ca2ff8fe3433bd433f9b0c7bd130868a38662`  
 💡 **Why it matters:** `Reveals tamper intent — attacker tries to simulate or spoof a change in security posture.`
+
 **KQL Query Used:**
 ```
 DeviceFileEvents
@@ -133,6 +134,7 @@ DeviceFileEvents
 - **CommandLine:** `"powershell.exe" -NoProfile -Sta -Command "try { Get-Clipboard | Out-Null } catch { }"  
 - **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
 💡 **Why it matters:** Attackers look for low-effort wins first; these quick probes often procede broader reconnaissance.
+
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -155,6 +157,7 @@ DeviceProcessEvents
 - **Timestamp:** ~2025-10-09T12:51:44.3425653Z 
 - **Process:** `"powershell.exe"  → spawned **"cmd.exe" /c qwinsta → "qwinsta.exe"
 - 💡 **Why it matters:** Context-gathering shapes attacker decisions - who, what, and where to target
+
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -178,6 +181,7 @@ DeviceProcessEvents
 - **CommandLine:** `wmic logicaldisk get name,freespace,size`  
 - **SHA256:** `da603fa720ab43aa6d4d36aa9fdb828dab9645523eabaac209af6451d5b4d757`  
 💡 **Why it matters:** Mapping where data lives is a preparatory step for collection and staging.
+
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -203,6 +207,7 @@ DeviceProcessEvents
 - **RegistryKey:** `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender`  
 - **RegistryValueName:** `DisableAntiSpyware` → **1**  
 💡 **Why it matters:** Weakens baseline protections at policy level; corroborates defense evasion.
+
 **KQL Query Used:**
 ```
 DeviceRegistryEvents
