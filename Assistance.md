@@ -64,10 +64,11 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 Determine where to begin hunting based on provided indicators such as HR related stuffs or tools were recently touched...over the mid-july weekends.
 
 **Host of Interest (Starting Point):** `gab-intrn-vm`  
-**Why:** Multiple machines in the department started spawning processes originating from the download folders. This unexpected scenario occurred during the first half of October. 
+**Why:** 
+1. Multiple machines in the department started spawning processes originating from the download folders. This unexpected scenario occurred during the first half of October. 
 2. Several machines were found to share the same types of files — similar executables, naming patterns, and other traits.
 3. Common keywords among the discovered files included “desk,” “help,” “support,” and “tool.”
-**KQL Query Used:**
+4. Intern operated machines seem to be affected to certain degree. **KQL Query Used:**
 ```
 let hits = DeviceFileEvents
 | where FileName has_any ("desk","help","support","tool")   // or use explicit filename
