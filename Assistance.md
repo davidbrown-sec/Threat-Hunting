@@ -10,9 +10,34 @@ Timeframe: Oct-9-2025
 
 ## Executive Summary
 
-Between July 18–19, 2025, the system nathan-iel-vm was targeted in a structured attack campaign. The adversary leveraged phishing, privilege escalation, credential dumping, persistence, data staging, exfiltration, and anti-forensics measures to achieve their objectives. Each flag represents a key stage of the attack chain, culminating in attempts to cover tracks and exit the environment undetected.
+On the workstation gab-intern-vm, during the period of October 1–15, 2025, multiple downloaded “support” executables were executed from user folders, followed by outbound PowerShell commands used to fetch additional tools  ￼. The actor then performed reconnaissance — enumerating processes, services, user sessions, clipboard data, and testing outbound network connectivity. A scheduled task was created to maintain persistence beyond the active session. Finally, a user-facing file was left behind to justify the activity, serving as a planted explanation to reduce suspicion.
 
-## Timeline
+
+## Timeline of Adversary Activity (gab-intern-vm)
+
+| **Time (UTC)**           | **Flag** | **Action Observed**                          | **Key Evidence**                                        |
+| ------------------------ | -------- | -------------------------------------------- | ------------------------------------------------------- |
+| **2025-10-01T07:12:03Z** | Flag 1   | Initial tool delivery to Downloads folder    | Executables with “help/support/desk”                    |
+| **2025-10-01T07:18:45Z** | Flag 2   | Download via PowerShell / web utilities      | `Invoke-WebRequest` / `curl` observed pulling remote content. |
+| **2025-10-01T07:20:12Z** | Flag 3   | Execution of downloaded “support” binary     | Launched from Downloads, initiated by `explorer.exe`. |
+| **2025-10-02T02:33:27Z** | Flag 4   | System reconnaissance (process/service scan) | Commands including `tasklist`, `wmic`, `sc`, `Get-Process`. |
+| **2025-10-03T11:05:09Z** | Flag 5   | User/session enumeration                     | `qwinsta`, `query session`, `quser`. |
+| **2025-10-04T09:42:50Z** | Flag 6   | Clipboard probing                             | PowerShell clipboard access (`Get-Clipboard`). |
+| **2025-10-05T13:17:34Z** | Flag 7   | Repeated broad enumeration sweep              | Multiple repeated `tasklist` / `Get-Process` executions. |
+| **2025-10-06T16:29:01Z** | Flag 8   | Environment mapping across other machines     | Similar executables/naming conventions on multiple endpoints. |
+| **2025-10-09T12:52:14Z** | Flag 9   | Outbound network tests begin                  | PowerShell egress activity (DNS + HTTP). |
+| **2025-10-09T12:52:30Z** | Flag 10  | Continuous DNS/HTTP outbound activity         | `DeviceNetworkEvents` to remote IP/URL. |
+| **2025-10-09T12:53:05Z** | Flag 11  | File creation/modification during staging     | `FileCreated`, `FileRenamed`, `FileCopied`. |
+| **2025-10-10T04:01:18Z** | Flag 12  | Persistence created                           | Scheduled task using `/create` + `onlogon`. |
+| **2025-10-10T04:05:02Z** | Flag 13  | Narrative / cover artifact dropped            | File intended to justify activity (readme/report). |
+| **2025-10-11T08:22:47Z** | Flag 14  | Proliferation of temp/log/readme artifacts    | Matches `(temp|readme|log|cover|report)` pattern across file events. |
+| **2025-10-12T15:40:12Z** | Flag 15  | Exfil-staged CSV discovered                   | `2786_CompanyFinancials_pwncrypt.csv`. |
+
+
+
+
+
+
 
 | **Time (UTC)**           | **Flag** | **Action Observed**                          | **Key Evidence**                                        |
 | ------------------------ | -------- | -------------------------------------------- | ------------------------------------------------------- |
@@ -38,16 +63,21 @@ Between July 18–19, 2025, the system nathan-iel-vm was targeted in a structure
 **Objective:**
 Determine where to begin hunting based on provided indicators such as HR related stuffs or tools were recently touched...over the mid-july weekends.
 
-**Host of Interest (Starting Point):** `nathan-iel-vm`  
-**Why:** HR tooling/scripts activity on July 18th; anchor of suspicious operations.
+**Host of Interest (Starting Point):** `gab-intrn-vm`  
+**Why:** Multiple machines in the department started spawning processes originating from the download folders. This unexpected scenario occurred during the first half of October. 
+2. Several machines were found to share the same types of files — similar executables, naming patterns, and other traits.
+3. Common keywords among the discovered files included “desk,” “help,” “support,” and “tool.”
 **KQL Query Used:**
 ```
-DeviceProcessEvents
-| where Timestamp between (datetime(2025-07-01) .. datetime(2025-07-31))
-| where ProcessCommandLine contains "HR"
-| where ProcessCommandLine contains "tool"
-| summarize Count = count() by DeviceName
-| sort by Count desc
+let hits = DeviceFileEvents
+| where FileName has_any ("desk","help","support","tool")   // or use explicit filename
+| where TimeGenerated  between (datetime(2025-10-01) .. datetime(2025-10-15))
+| summarize TotalOccurrences = count() by DeviceName;
+hits
+| order by TotalOccurrences desc
+| serialize
+| extend Rank = row_number()
+| project Rank, DeviceName, TotalOccurrences
 ```
 <img width="428" height="258" alt="Screenshot 2025-08-17 213533" src="https://github.com/user-attachments/assets/116cd420-68e4-4dc7-8b44-fcb2d85bf242" />
 
