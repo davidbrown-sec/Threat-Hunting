@@ -63,7 +63,7 @@ hits
 | extend Rank = row_number()
 | project Rank, DeviceName, TotalOccurrences
 ```
-<img width="428" height="258" alt="Screenshot 2025-08-17 213533" src="https://github.com/user-attachments/assets/116cd420-68e4-4dc7-8b44-fcb2d85bf242" />
+<img width="428" height="258" alt="Screenshot 2025-08-17 213533" src="[https://github.com/davidbrown-sec/Threat-Hunting/blob/20fae68f6c29e0431c6d6ed4e865786fc32bbd02/screen%20captures/pre-flag.png)" />
 
 
 ---
