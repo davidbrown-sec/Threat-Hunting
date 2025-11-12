@@ -74,10 +74,10 @@ hits
 
 🚩 **Flag 1 – Initial Execution Detection**  
 🎯 **Objective:** Detect the earliest anomalous execution that could represent an entry point.  
-📌 **Finding (answer):** **-ExecutionPolicy**  
+📌 **Finding (answer):** -ExecutionPolicy
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm  
-- **Timestamp:** 10/6/2025, 12:13:22.448 PM (console), earliest creation at **2025-10-06T12:13:22.4483418Z**  
+- **Timestamp:** 2025-10-06T12:13:22.4483418Z
 - **Process:** powershell.exe  
 - **CommandLine:** `powershell -ExecutionPolicy Unrestricted -File script0.ps1`  
 - **SHA256:** `badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0`  
@@ -102,7 +102,7 @@ DeviceProcessEvents
 
 🚩 **Flag 2 – Defense Disabling**  
 🎯 **Objective:** Find a file that was manually accessed and implies tampering with security settings.  
-📌 **Finding (answer):** `SHA256 = 9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
+📌 **Finding (answer):** `DefenderTamperArtifact.lnk`  
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm 
 - **Timestamp:** 2025-10-09T12:34:59.1260624Z 
