@@ -142,27 +142,29 @@ DeviceProcessEvents
 | project TimeGenerated, FileName, InitiatingProcessFileName, ProcessCommandLine,SHA256
 | order by TimeGenerated asc
 ```
-<img width="867" height="343" alt="Screenshot 2025-08-17 215559" src="https://github.com/user-attachments/assets/99a871c3-c398-42dc-b375-91b7e41851bf" />
+<img width="867" height="343" alt="Screenshot 2025-08-17 215559" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/240660d57ce66c4d31a346d3c4534154ad9967a8/screen%20captures/Assistance-F3.png" />
 
 
 ---
 
-🚩 **Flag 4 – Active Session Discovery**  
-🎯 **Objective:** Reveal which sessions are currently active for potential masking.  
+🚩 **Flag 4 – Host Context Recon**  
+🎯 **Objective:** Find activity that gathers basic host and user context to inform follow-up actions..  
 📌 **Finding (answer):** `qwinsta.exe`  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** ~2025-07-18T02:17:29Z  
-- **Process:** `"powershell.exe" qwinsta` → spawned **qwinsta.exe**  
-💡 **Why it matters:** Live session enumeration enables “ride‑along” with existing users to reduce new‑logon noise and increase stealth.
+- **Host:** gab-intrn-vm 
+- **Timestamp:** ~2025-10-09T12:51:44.3425653Z 
+- **Process:** `"powershell.exe"  → spawned **"cmd.exe" /c qwinsta → "qwinsta.exe"
+- 💡 **Why it matters:** Context-gathering shapes attacker decisions - who, what, and where to target
 **KQL Query Used:**
 ```
 DeviceProcessEvents
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "qwinsta"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-01) .. datetime(2025-10-15))
+| where ProcessCommandLine has_any ("qwinsta")
+| project TimeGenerated, FileName, InitiatingProcessCommandLine, ProcessCommandLine,SHA256
+| order by TimeGenerated asc
 ```
-<img width="729" height="610" alt="Screenshot 2025-08-17 214913" src="https://github.com/user-attachments/assets/ddd32254-a7d9-4e9c-b4be-c854593f3378" />
+<img width="729" height="610" alt="Screenshot 2025-08-17 214913" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/c6ad8e1098afbedc54ba857ef3ecdb61fc5a62e4/screen%20captures/Assistance-F4.png" />
 
 ---
 
