@@ -173,10 +173,10 @@ DeviceProcessEvents
 📌 **Finding (answer):** `
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm 
-- **Timestamps:** 2025-07-18T14:58:41Z and 2025-07-18T15:00:06Z  
-- **Process:** powershell.exe  
-- **CommandLine:** `Set-MpPreference -DisableRealtimeMonitoring $true`  
-- **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
+- **Timestamps:** 2025-10-09T12:51:18.5628399Z  
+- **Process:** powershell.exe → cmd.exe 
+- **CommandLine:** `wmic logicaldisk get name,freespace,size`  
+- **SHA256:** `da603fa720ab43aa6d4d36aa9fdb828dab9645523eabaac209af6451d5b4d757`  
 💡 **Why it matters:** Mapping where data lives is a preparatory step for collection and staging.
 **KQL Query Used:**
 ```
