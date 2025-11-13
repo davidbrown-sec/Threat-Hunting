@@ -426,7 +426,7 @@ DeviceNetworkEvents
 - **Path:** `C:\Users\g4bri3lintern\AppData\Roaming\Microsoft\Windows\Recent\SupportChat_log.lnk`
 - **SHA256** `3d612fb329f4278d7d1c36c5859797bbe30dca318e27bd2afdf69b1c42198809`
 - **Host:** gab-intrn-vm
-- 
+  
 💡 **Why it matters:** A planted explanation is a classic misdirection. The sequence and context reveal deception more than the text itself.
 
 **KQL Query Used:**
