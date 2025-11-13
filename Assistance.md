@@ -8,7 +8,7 @@ Environment Investigated: gab-intrn-vm
 
 Timeframe: Oct-9-2025
 
-## Senerio 
+## Scenario  
 
 A routine support request should have ended with a reset and reassurance. Instead, the so-called "help" left behind a trail of anomalies that don't add up.
 What was framed as troubleshooting looked more like an audit of the system itself - probing, cataloging, leaving subtle traces in its wake. Actions chained together in suspicious sequence: first gaining a foothold, then expanding reach, then preparing to linger long after the session ended.
