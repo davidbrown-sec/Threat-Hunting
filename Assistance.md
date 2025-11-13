@@ -29,9 +29,9 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | DNS/HTTP request to `msftconnecttest[.]com`              |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
 | 2025-10-10 04:01:18     | 12   | Persistence established                          | DNS?HTTP request to `www[.]httpbin.org[.]com`                 |
-| 2025-10-10 04:05:02     | 13   | Planted narrative / justification                | User-facing artifact (`.lnk`/log/readme) created and opened    |
+| 2025-10-10 04:05:02     | 13   | Persistence established                          | User-facing artifact (`.lnk`/log/readme) created and opened    |
 |    | 14   |        |             |
-| 2025-10-12 15:40:12     | 15   | Exfil-staged CSV discovered                      | `SupportChat_log.lnk`
+| 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`
 
 
 ---
