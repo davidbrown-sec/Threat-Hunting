@@ -8,6 +8,16 @@ Environment Investigated: gab-intrn-vm
 
 Timeframe: Oct-9-2025
 
+## Senerio 
+
+A routine support request should have ended with a reset and reassurance. Instead, the so-called "help" left behind a trail of anomalies that don't add up.
+What was framed as troubleshooting looked more like an audit of the system itself - probing, cataloging, leaving subtle traces in its wake. Actions chained together in suspicious sequence: first gaining a foothold, then expanding reach, then preparing to linger long after the session ended.
+a neat explanation appeared - a
+story anted in plain sights designed to justify the very behavior that demanded scrutiny.
+This wasn't remote assistance. It was a misdirection.
+Your mission this time is to reconstruct the timeline, connect the scattered remnants of this "support session", and decide what was legitimate, and what was staged.
+The evidence is here. The question is whether you'll see through the story or believe it.
+
 ## Executive Summary
 
 On the workstation gab-intern-vm, during the period of October 1–15, 2025, multiple downloaded “support” executables were executed from user folders, followed by outbound PowerShell commands used to fetch additional tools  ￼. The actor then performed reconnaissance — enumerating processes, services, user sessions, clipboard data, and testing outbound network connectivity. A scheduled task was created to maintain persistence beyond the active session. Finally, a user-facing file was left behind to justify the activity, serving as a planted explanation to reduce suspicion.
