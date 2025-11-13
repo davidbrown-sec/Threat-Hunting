@@ -17,8 +17,9 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 
 | Time (UTC)              | Flag | Action Observed                                 | Key Evidence (Concise)                                         |
 |-------------------------|------|--------------------------------------------------|-----------------------------------------------------------------|
-| 2025-10-01 07:12:03     | 1    | Initial Execution Detection                      | “help/support/desk” executables dropped into Downloads          |
-| 2025-10-01 07:18:45     | 2    | PowerShell download of additional tooling        | Invoke-WebRequest / curl activity                               |
+| 2025-10-06 12:13:22     | 1    | Initial Execution Detection                      | “-ExecutionPolicy used to run commands      
+          |
+| 2025-10-09 12:34:59     | 2    | Defense Disabling                                | DefenderTamperArtifact.lnk indicates tamper intent                              |
 | 2025-10-01 07:20:12     | 3    | Execution of downloaded support tool             | Executed via explorer.exe from Downloads                        |
 | 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)           |
 | 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                      |
