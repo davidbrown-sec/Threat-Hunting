@@ -197,64 +197,70 @@ DeviceProcessEvents
 
 ---
 
-🚩 **Flag 6 – Defender Policy Modification**  
-🎯 **Objective:** Validate if core system protection settings were modified.  
-📌 **Finding (answer):** **DisableAntiSpyware** (registry value name)  
+🚩 **Flag 6 – Connectivity & Name resolution Check**  
+🎯 **Objective:** Identify checks that validate network reachability and name resolution.  
+📌 **Finding (answer):** RuntimeBroker.exe
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** 2025-07-18T14:38:21Z  
-- **ActionType:** RegistryValueSet  
-- **RegistryKey:** `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender`  
-- **RegistryValueName:** `DisableAntiSpyware` → **1**  
-💡 **Why it matters:** Weakens baseline protections at policy level; corroborates defense evasion.
+- **Host:** gab-intrn-vm  
+- **Timestamp:** 2025-10-09T12:51:44.3081129Z
+- **InitiatingProcessParentFileName** RuntimeBroker.exe
+- **SHA256:** `badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0`
+💡 **Why it matters:** Confirming egress is a necessary precondition before any attempt to move data off-host.
 
-**KQL Query Used:**
-```
-DeviceRegistryEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where ActionType == "RegistryValueSet"
-| project Timestamp, DeviceName, ActionType, RegistryKey, RegistryValueName, RegistryValueData, PreviousRegistryKey, PreviousRegistryValueData, PreviousRegistryValueName
-```
-<img width="868" height="792" alt="Screenshot 2025-08-17 220703" src="https://github.com/user-attachments/assets/3a95118b-7155-43a7-a5cb-2cbc0bd0a090" />
-
----
-
-🚩 **Flag 7 – Access to Credential-Rich Memory Space**  
-🎯 **Objective:** Identify if the attacker dumped memory content from a sensitive process.  
-📌 **Finding (answer):** HR-related dump file disguise = **HRConfig.json**  
-🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamps:** 2025-07-18T15:10:47Z & 15:12:27Z  
-- **Process:** `rundll32.exe`  
-- **CommandLines:**  
-  - `"rundll32.exe" C:\Windows\System32\comsvcs.dll, MiniDump 7784 C:\HRTools\HRConfig.json full`  
-  - `"rundll32.exe" C:\Windows\System32\comsvcs.dll, MiniDump 716 C:\HRTools\HRConfig.json full`  
-- **Initiating:** powershell.exe  
-- **SHA256:** `076592ca1957f8357cc201f0015072c612f5770ad7de85f87f254253c754dd7`  
-💡 **Why it matters:** comsvcs.dll MiniDump likely targeted LSASS; output masked as HR config to blend with business activity.
 **KQL Query Used:**
 ```
 DeviceProcessEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "Dump"
-| project Timestamp, DeviceId, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
-
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-01) .. datetime(2025-10-15))
+| where tolower(ProcessCommandLine) contains "session" 
+   or tolower(ProcessCommandLine) contains "qwinsta"
+   or tolower(ProcessCommandLine) contains "quser"
+   or tolower(ProcessCommandLine) contains "query session"
+| project TimeGenerated, InitiatingProcessParentFileName, InitiatingProcessFileName, ProcessCommandLine,SHA256
+| order by TimeGenerated desc
 ```
-<img width="879" height="567" alt="Screenshot 2025-08-17 221121" src="https://github.com/user-attachments/assets/1c15856c-3250-4f8d-ad99-5cc96f053f63" />
+<img width="868" height="792" alt="Screenshot 2025-08-17 220703" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/05009310acf44e522fd81bda8cf0657da5a138c1/screen%20captures/Assistance-F6.png" />
 
 ---
 
-🚩 **Flag 8 – File Inspection of Dumped Artifacts**  
-🎯 **Objective:** Detect whether memory dump contents were reviewed post‑collection.  
-📌 **Finding (answer):** `"notepad.exe" C:\HRTools\HRConfig.json`  
+🚩 **Flag 7 –   **  
+🎯 **Objective:**  
+📌 **Finding (answer):** 
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
-- **Timestamp:** 2025-07-18T15:13:16Z  
-- **Process:** notepad.exe (initiated by powershell.exe)  
-- **SHA256:** `da5807bb0997ccb5132950ec87eda2b33b1ac4533cf17a22a6f3b576ed7c5b`  
-💡 **Why it matters:** Confirms post‑dump review/validation of harvested credentials or secrets.
+- **Host:** gab-intrn-vm  
+- **Timestamps:**  
+- **Process:** 
+- **CommandLines:**  
+
+- **Initiating:** powershell.exe  
+- **SHA256:**
+💡 **Why it matters:** 
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-01) .. datetime(2025-10-15))
+| where tolower(ProcessCommandLine) contains "session" 
+   or tolower(ProcessCommandLine) contains "qwinsta"
+   or tolower(ProcessCommandLine) contains "quser"
+   or tolower(ProcessCommandLine) contains "query session"
+| project TimeGenerated, InitiatingProcessUniqueId,FileName, InitiatingProcessFileName, ProcessCommandLine,SHA256
+| order by TimeGenerated desc
+
+```
+<img width="879" height="567" alt="Screenshot 2025-08-17 221121" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/772745a01428edf05265a55d7bd2a0fd51ef494d/screen%20captures/Assistance-F7.png" />
+
+---
+
+🚩 **Flag 8 – Runtime Application Inventory**  
+🎯 **Objective:** Detect enumeration of running applications and services to inform risk and opportunity.  
+📌 **Finding (answer):** `tasklist.exe`  
+🔍 **Evidence:**  
+- **Host:** gab-intrn-vm   
+- **Timestamp:**  2025-10-09T12:51:57.6866149Z 
+- **Process:**   tasklist /v
+- **SHA256:** be7241a74fe9a9d30e0631e41533a362b21c8f7aae3e5b6ad319cc15c024ec3f
+💡 **Why it matters:** A process inventory shows what's present and what to avoid or target for collection.
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -263,7 +269,7 @@ DeviceProcessEvents
 | where ProcessCommandLine contains "HRConfig.json"
 | project Timestamp, DeviceId, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
 ```
-<img width="760" height="268" alt="Screenshot 2025-08-17 221257" src="https://github.com/user-attachments/assets/cd60c854-428b-4fde-aa35-a48941216c7e" />
+<img width="760" height="268" alt="Screenshot 2025-08-17 221257" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/7c29fcc436e67762e2eecfb6f33b660f95e3fdbe/screen%20captures/Assistance-F8.png" />
 
 ---
 
@@ -271,7 +277,7 @@ DeviceProcessEvents
 🎯 **Objective:** Catch network activity establishing contact outside the environment.  
 📌 **Finding (answer):** **.net** (TLD of unusual outbound domain)  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
+- **Host:** gab-intrn-vm   
 - **Suspicious Domain:** `eo7j1sn715wkekj.m.pipedream.net` (amid mostly Microsoft `*.msedge.net`/`*.azureedge.net`)  
 💡 **Why it matters:** Non‑standard webhook/C2 infrastructure used as low‑profile beacon prior to exfiltration.
 **KQL Query Used:**
@@ -292,7 +298,7 @@ DeviceNetworkEvents
 🎯 **Objective:** Uncover evidence of internal data leaving the environment.  
 📌 **Finding (answer):** Last unusual outbound connection → **52.54.13.125**  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm · **ActionType:** ConnectionSuccess  
+- **Host:** gab-intrn-vm  
 - **RemoteUrl:** `eo7j1sn715wkekj.m.pipedream.net`  
 - **Sequence:** 52.55.234.111 → **52.54.13.125** (last at 2025-07-18T15:28:44Z)  
 💡 **Why it matters:** Validates egress path to external service consistent with data staging/exfil.
@@ -314,7 +320,7 @@ DeviceNetworkEvents
 🎯 **Objective:** Verify if unauthorized persistence was established via legacy tooling.  
 📌 **Finding (answer):** File name tied to Run‑key value = **OnboardTracker.ps1**  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
+- **Host:** gab-intrn-vm  
 - **Timestamp:** 2025-07-18T15:50:36Z  
 - **Registry:** `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`  
 - **Value Name:** `HRToolTracker` → **C:\HRTools\LegacyAutomation\OnboardTracker.ps1**  
@@ -336,7 +342,7 @@ DeviceRegistryEvents
 🎯 **Objective:** Surface the document that stood out in the attack sequence.  
 📌 **Finding (answer):** **Carlos Tanaka**  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
+- **Host:** gab-intrn-vm   
 - **Repeated Access:** `Carlos.Tanaka-Evaluation.lnk` (count = 3) within HR artifacts list  
 💡 **Why it matters:** Personnel record of focus; aligns with promotion‑manipulation motive.
 **KQL Query Used:**
@@ -358,7 +364,7 @@ DeviceEvents
 📌 **Finding (answer):** **SHA1 = 65a5195e9a36b6ce73fdb40d744e0a97f0aa1d34**  
 🔍 **Evidence:**  
 - **File:** `PromotionCandidates.csv`  
-- **Host:** nathan-iel-vm  
+- **Host:** gab-intrn-vm  
 - **Timestamp:** 2025-07-18 16:14:36 (first **FileModified**)  
 - **Path:** `C:\HRTools\PromotionCandidates.csv`  
 - **Initiating:** `"NOTEPAD.EXE" C:\HRTools\PromotionCandidates.csv`  
@@ -393,7 +399,7 @@ DeviceFileEvents
 🎯 **Objective:** Detect attempts to impair system forensics.  
 📌 **Finding (answer):** **2025-07-19T05:38:55.6800388Z** (first log‑clear attempt)  
 🔍 **Evidence:**  
-- **Host:** nathan-iel-vm  
+- **Host:** gab-intrn-vm  
 - **Process:** `wevtutil.exe`  
 - **Command:** `"wevtutil.exe" cl Security` (+ additional clears shortly after)  
 - **SHA256:** `0b732d9ad576d1400db44edf3e750849ac481e9bbaa628a3914e5eef9b7181b0`  
@@ -418,7 +424,7 @@ DeviceProcessEvents
 🔍 **Evidence:**  
 - **File:** `EmptySysmonConfig.xml`  
 - **Path:** `C:\Temp\EmptySysmonConfig.xml`  
-- **Host:** nathan-iel-vm · **Initiating:** powershell.exe  
+- **Host:** gab-intrn-vm · **Initiating:** powershell.exe  
 💡 **Why it matters:** Blinds Sysmon to suppress detection just prior to exit; ties off anti‑forensics chain.
 **KQL Query Used:**
 ```
