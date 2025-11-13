@@ -34,6 +34,25 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-11 08:22:47     | 14   | Proliferation of temp/log/readme artifacts       | Multiple artifacts matching `(temp|readme|log|cover|report)`    |
 | 2025-10-12 15:40:12     | 15   | Exfil-staged CSV discovered                      | `2786_CompanyFinancials_pwncrypt.csv`                           |
 
+| Time (UTC)              | Flag | Action Observed                                 | Key Evidence (Concise)                                         |
+|-------------------------|------|--------------------------------------------------|-----------------------------------------------------------------|
+| 2025-10-01 07:12:03     | 1    | Initial tool delivery                            | “help/support/desk” executables dropped into Downloads          |
+| 2025-10-01 07:18:45     | 2    | PowerShell download of additional tooling        | Invoke-WebRequest / curl activity                               |
+| 2025-10-01 07:20:12     | 3    | Execution of downloaded support tool             | Executed via explorer.exe from Downloads                        |
+| 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)           |
+| 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                      |
+| 2025-10-09 12:51:44     | 6    | User/session enumeration                         | `qwinsta`, `quser`, `query session`                             |
+| 2025-10-09 12:51:44     | 7    | Repeated process enumeration sweep               | Multiple `tasklist` / `Get-Process` executions                  |
+| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist /v`                                                   |
+| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               | DNS/HTTP request → `msftconnecttest.com`                        |
+| 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | PowerShell → external IP `23.218.218.182`                       |
+| 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`              |
+| 2025-10-10 04:01:18     | 12   | Persistence established                          | Scheduled task created (`/create` + `onlogon`)                  |
+| 2025-10-10 04:05:02     | 13   | Planted narrative / justification                | User-facing artifact (readme/report/log) created & opened       |
+| 2025-10-11 08:22:47     | 14   | Proliferation of temp/log/readme artifacts       | Multiple artifacts matching `(temp|readme|log|cover|report)`    |
+| 2025-10-12 15:40:12     | 15   | Exfil-staged CSV discovered                      | `2786_CompanyFinancials_pwncrypt.csv`                           |
+
+
 
 
 ---
