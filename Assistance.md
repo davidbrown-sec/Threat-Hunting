@@ -278,10 +278,10 @@ DeviceProcessEvents
 
 🚩 **Flag 9 – Privilege Surface Check**  
 🎯 **Objective:** Detect attempts to understand privileges available to the current actor.    
-📌 **Finding** (answer):**2025-10-09T12:52:14.3135459Z 
+📌 **Finding** (answer): `2025-10-09T12:52:14.3135459Z`
 🔍 **Evidence:**
-- **Host:** gab-intrn-vm 
-- **Timestamp:**  2025-10-09T12:52:14.3135459Z
+- **Host:** `gab-intrn-vm` 
+- **Timestamp:**  `2025-10-09T12:52:14.3135459Z`
 
  **Why it matters:** Privilege mapping informs whether the actor proceeds as a user or seeks elevation.
 
