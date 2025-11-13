@@ -395,26 +395,6 @@ DeviceNetworkEvents
 <img width="495" height="468" alt="Screenshot 2025-08-17 223219" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/94ee3ff9cde27dae632e847f783c8974072381a9/screen%20captures/Assistance-F13.png" />
 
 
-
----
-
-🚩 **Flag 14 – **  
-🎯 **Objective:**   
-📌 **Finding (answer):**   
-🔍 **Evidence:**  
-- **Host:** gab-intrn-vm  
-- **Process:** `  
-- **Command:** `
-- **SHA256:** `  
-💡 **Why it matters:** 
-**KQL Query Used:**
-```
-
-```
-<img width="1263" height="773" alt="Screenshot 2025-08-17 223624" src="" />
-
-
-
 ---
 
 🚩 **Flag 15 – Planted Narrative / Cover Artifact**  
