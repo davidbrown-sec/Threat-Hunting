@@ -332,8 +332,9 @@ DeviceNetworkEvents
 - **Host:** gab-intrn-vm  
 - **Timestamp:** 2025-10-09T12:58:17.4364257Z 
 - **Value Name:** `ReconArtifacts.zip` → **C:\Users\Public\ReconArtifacts.zip**    
-- **Initiating Process:**  RuntimeBroker.exe`  -> powershell.exe
+- **Initiating Process:**  `RuntimeBroker.exe`  -> powershell.exe`
 💡 **Why it matters:** Staging is the practical step that simplifies exfiltration and should be correlated back to prior recon.
+
 **KQL Query Used:**
 ```
 DeviceFileEvents
