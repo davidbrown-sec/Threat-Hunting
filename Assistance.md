@@ -30,22 +30,18 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-06 12:13:22     | 1    | Initial Execution Detection                      | `-ExecutionPolicy` used to run PowerShell commands             |
 | 2025-10-09 12:34:59     | 2    | Defense Disabling                                | `DefenderTamperArtifact.lnk` indicates tamper intent           |
 | 2025-10-01 07:20:12     | 3    | Execution of downloaded support tool             | Executed via `explorer.exe` from Downloads                     |
-| 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)          |
+| 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access (`Get-Clipboard`)                  |
 | 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                     |
-| 2025-10-09 12:51:44     | 6    | Parent process (session check)                   |RuntimeBroker.exe                                               |
-| 2025-10-09 12:51:44     | 7    |  Initiating process unique ID                    | 2533274790397065                                                |
-| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist.exe`                                                   |
-| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               |2025-10-09T12:52:14.3135459Z                                     |
-| 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | DNS/HTTP request to `msftconnecttest[.]com`              |
+| 2025-10-09 12:51:44     | 6    | Parent process (session check)                   | `RuntimeBroker.exe`                                            |
+| 2025-10-09 12:51:44     | 7    | Initiating process unique ID                     | `2533274790397065`                                             |
+| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist.exe`                                                 |
+| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               | PowerShell DNS/HTTP request initiated                          |
+| 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | Connection to `msftconnecttest[.]com`                          |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
-| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin.org[.]com`                 |
-| 2025-10-10 04:05:02     | 13   |Scheduled task persistence                       | SupportToolUpdater.ps1
-                          |
-|                         | 14    |Registry autorun fallback                        |RemoteAssistUpdater                                            |
-| 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`
-                |
-
-
+| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin.org[.]com`                  |
+| 2025-10-10 04:05:02     | 13   | Scheduled task persistence                       | `SupportToolUpdater.ps1` executed via `/create /onlogon`       |
+| 2025-10-10 04:05:15     | 14   | Registry autorun fallback                        | `RemoteAssistUpdater` registry entry                           |
+| 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`                                          |
 ---
 ### Starting Point – Identifying the Initial System
 
