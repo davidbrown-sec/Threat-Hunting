@@ -32,13 +32,13 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-01 07:20:12     | 3    | Execution of downloaded support tool             | Executed via `explorer.exe` from Downloads                     |
 | 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)          |
 | 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                     |
-| 2025-10-09 12:51:44     | 6    | User/session enumeration                         | `qwinsta`, `quser`, `query session`                            |
-| 2025-10-09 12:51:44     | 7    |  Interactive Session Discovery            | Multiple `tasklist` / `Get-Process` executions                 |
-| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist /v`                                                   |
-| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               |                   |
+| 2025-10-09 12:51:44     | 6    | Parent process (session check)                   |RuntimeBroker.exe                                               |
+| 2025-10-09 12:51:44     | 7    |  Initiating process unique ID                    | 2533274790397065                                                |
+| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist.exe`                                                   |
+| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               |2025-10-09T12:52:14.3135459Z                                     |
 | 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | DNS/HTTP request to `msftconnecttest[.]com`              |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
-| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS?HTTP request to `www[.]httpbin.org[.]com`                 |
+| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin.org[.]com`                 |
 | 2025-10-10 04:05:02     | 13   |Scheduled task persistence                       | User-facing artifact (`.lnk`/log/readme) created and opened    |
 |                         | 14    |Registry autorun fallback                        |RemoteAssistUpdater                                            |
 | 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`
@@ -231,17 +231,16 @@ DeviceProcessEvents
 
 ---
 
-🚩 **Flag 7 –   **  
+🚩 **Flag 7 –   Initiating process unique ID**  
 🎯 **Objective:**  
-📌 **Finding (answer):** 
+📌 **Finding (answer):** 2533274790397065
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm  
-- **Timestamps:**  
-- **Process:** 
-- **CommandLines:**  
-
+- **Timestamps:**  2025-10-09T12:51:44.3081129Z
+- **Process:** powershell.exe
+- **CommandLines:**  "cmd.exe" /c query session
 - **Initiating:** powershell.exe  
-- **SHA256:**
+- **SHA256:** badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0
 💡 **Why it matters:**
 
 **KQL Query Used:**
