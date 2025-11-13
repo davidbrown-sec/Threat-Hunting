@@ -261,6 +261,7 @@ DeviceProcessEvents
 - **Timestamp:**  2025-10-09T12:51:57.6866149Z 
 - **Process:**   tasklist /v
 - **SHA256:** be7241a74fe9a9d30e0631e41533a362b21c8f7aae3e5b6ad319cc15c024ec3f
+  
   **Why it matters:** A process inventory shows what's present and what to avoid or target for collection.
 
 **KQL Query Used:**
@@ -277,11 +278,12 @@ DeviceProcessEvents
 
 🚩 **Flag 9 – Privilege Surface Check**  
 🎯 **Objective:** Detect attempts to understand privileges available to the current actor.
-📌 **Finding (answer):**2025-10-09T12:52:14.3135459Z
+📌 **Finding** (answer):**2025-10-09T12:52:14.3135459Z
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm
 - **Timestamp:**  2025-10-09T12:52:14.3135459Z
-💡 **Why it matters:** Privilege mapping informs whether the actor proceeds as a user or seeks elevation.
+
+ **Why it matters:** Privilege mapping informs whether the actor proceeds as a user or seeks elevation.
 
 **KQL Query Used:**
 ```
