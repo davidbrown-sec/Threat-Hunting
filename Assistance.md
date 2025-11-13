@@ -15,24 +15,23 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 
 ## Timeline of Adversary Activity (gab-intern-vm)
 
-| **Time (UTC)**           | **Flag** | **Action Observed**                          | **Key Evidence**                                        |
-| ------------------------ | -------- | -------------------------------------------- | ------------------------------------------------------- |
-| **2025-10-01T07:12:03Z** | Flag 1   | Initial tool delivery to Downloads folder    | Executables with “help/support/desk”                    |
-| **2025-10-01T07:18:45Z** | Flag 2   | Download via PowerShell / web utilities      | `Invoke-WebRequest` / `curl` observed pulling remote content. |
-| **2025-10-01T07:20:12Z** | Flag 3   | Execution of downloaded “support” binary     | Launched from Downloads, initiated by `explorer.exe`. |
-| **2025-10-02T02:33:27Z** | Flag 4   | System reconnaissance (process/service scan) | Commands including `tasklist`, `wmic`, `sc`, `Get-Process`. |
-| **2025-10-03T11:05:09Z** | Flag 5   | User/session enumeration                     | `qwinsta`, `query session`, `quser`. |
-| **2025-10-04T09:42:50Z** | Flag 6   | Clipboard probing                             | PowerShell clipboard access (`Get-Clipboard`). |
-| **2025-10-05T13:17:34Z** | Flag 7   | Repeated broad enumeration sweep              | Multiple repeated `tasklist` / `Get-Process` executions. |
-| **2025-10-06T16:29:01Z** | Flag 8   | Environment mapping across other machines     | Similar executables/naming conventions on multiple endpoints. |
-| **2025-10-09T12:52:14Z** | Flag 9   | Outbound network tests begin                  | PowerShell egress activity (DNS + HTTP). |
-| **2025-10-09T12:52:30Z** | Flag 10  | Continuous DNS/HTTP outbound activity         | `DeviceNetworkEvents` to remote IP/URL. |
-| **2025-10-09T12:53:05Z** | Flag 11  | File creation/modification during staging     | `FileCreated`, `FileRenamed`, `FileCopied`. |
-| **2025-10-10T04:01:18Z** | Flag 12  | Persistence created                           | Scheduled task using `/create` + `onlogon`. |
-| **2025-10-10T04:05:02Z** | Flag 13  | Narrative / cover artifact dropped            | File intended to justify activity (readme/report). |
-| **2025-10-11T08:22:47Z** | Flag 14  | Proliferation of temp/log/readme artifacts    | Matches `(temp|readme|log|cover|report)` pattern across file events. |
-| **2025-10-12T15:40:12Z** | Flag 15  | Exfil-staged CSV discovered                   | `2786_CompanyFinancials_pwncrypt.csv`. |
-
+| Time (UTC)              | Flag | Action Observed                                 | Key Evidence (Concise)                                         |
+|-------------------------|------|--------------------------------------------------|-----------------------------------------------------------------|
+| 2025-10-01 07:12:03     | 1    | Initial Execution Detection                      | “help/support/desk” executables dropped into Downloads          |
+| 2025-10-01 07:18:45     | 2    | PowerShell download of additional tooling        | Invoke-WebRequest / curl activity                               |
+| 2025-10-01 07:20:12     | 3    | Execution of downloaded support tool             | Executed via explorer.exe from Downloads                        |
+| 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)           |
+| 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                      |
+| 2025-10-09 12:51:44     | 6    | User/session enumeration                         | `qwinsta`, `quser`, `query session`                             |
+| 2025-10-09 12:51:44     | 7    | Repeated process enumeration sweep               | Multiple `tasklist` / `Get-Process` executions                  |
+| 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist /v`                                                   |
+| 2025-10-09 12:52:14     | 9    | Outbound network reachability test               | DNS/HTTP request → `msftconnecttest.com`                        |
+| 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | PowerShell → external IP `23.218.218.182`                       |
+| 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`              |
+| 2025-10-10 04:01:18     | 12   | Persistence established                          | Scheduled task created (`/create` + `onlogon`)                  |
+| 2025-10-10 04:05:02     | 13   | Planted narrative / justification                | User-facing artifact (readme/report/log) created & opened       |
+| 2025-10-11 08:22:47     | 14   | Proliferation of temp/log/readme artifacts       | Multiple artifacts matching `(temp|readme|log|cover|report)`    |
+| 2025-10-12 15:40:12     | 15   | Exfil-staged CSV discovered                      | `2786_CompanyFinancials_pwncrypt.csv`                           |
 
 
 
