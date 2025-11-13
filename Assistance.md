@@ -368,7 +368,7 @@ DeviceNetworkEvents
 | project TimeGenerated, RemoteUrl, RemoteIP,  InitiatingProcessFileName, InitiatingProcessCommandLine, InitiatingProcessParentFileName
 | order by TimeGenerated asc
 ```
-<img width="434" height="767" alt="Screenshot 2025-08-17 222304" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/5a05c5de86c3a527db92611d5b7f8de9a31f84c6/screen%20captures/Assistance-F12.png" />
+<img width="1643" height="231" alt="Screenshot 2025-08-17 222304" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/5a05c5de86c3a527db92611d5b7f8de9a31f84c6/screen%20captures/Assistance-F12.png" />
 
 
 
