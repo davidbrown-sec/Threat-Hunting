@@ -278,7 +278,8 @@ DeviceProcessEvents
 
 🚩 **Flag 9 – Privilege Surface Check**  
 🎯 **Objective:** Detect attempts to understand privileges available to the current actor.    
-📌 **Finding** (answer): `2025-10-09T12:52:14.3135459Z`
+📌 **Finding** (answer): `2025-10-09T12:52:14.3135459Z`;
+
 🔍 **Evidence:**
 - **Host:** `gab-intrn-vm` 
 - **Timestamp:**  `2025-10-09T12:52:14.3135459Z`
@@ -300,24 +301,24 @@ DeviceProcessEvents
 
 ---
 
-🚩 **Flag 10 – Covert Data Transfer**  
-🎯 **Objective:** Uncover evidence of internal data leaving the environment.  
-📌 **Finding (answer):** Last unusual outbound connection → **52.54.13.125**  
+🚩 **Flag 10 – Proof-of-Access & Egress Validation**  
+🎯 **Objective:** Find actions that both validate outbound reachability and attempt to capture host state for exfiltration value.
+📌 **Finding (answer):** **www.msftconnecttest.com**
 🔍 **Evidence:**  
-- **Host:** gab-intrn-vm  
-- **RemoteUrl:** `eo7j1sn715wkekj.m.pipedream.net`  
-- **Sequence:** 52.55.234.111 → **52.54.13.125** (last at 2025-07-18T15:28:44Z)  
-💡 **Why it matters:** Validates egress path to external service consistent with data staging/exfil.
-**KQL Query Used:**
+- **Host:** `gab-intrn-vm` 
+- **RemoteUrl:** `www.msftconnecttest.com`
+- **RemoteIP:** `23.218.218.182`
+- 💡 **Why it matters:** This step demonstrates both access and the potential to move meaningful data off the host...
 ```
 DeviceNetworkEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where RemoteUrl !~ ""
-| where RemoteUrl contains "pipedream.net"
-| project Timestamp, DeviceName, ActionType, RemoteIP, RemoteUrl
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated > datetime(2025-10-09T12:52:14.3135459Z)
+| where InitiatingProcessCommandLine contains "powershell"
+| where ActionType in ("DnsQuery", "HttpRequest", "ConnectionSuccess")
+| project TimeGenerated, RemoteUrl, RemoteIP, InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by TimeGenerated asc
 ```
-<img width="492" height="411" alt="Screenshot 2025-08-17 221959" src="https://github.com/user-attachments/assets/3497fc89-96b0-4dff-955d-1ef4930d7e02" />
+<img width="492" height="411" alt="Screenshot 2025-08-17 221959" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/fcc4994190d726bd97dc20b56f6daae5e50d18b8/screen%20captures/Assistance-F10.png" />
 
 
 ---
