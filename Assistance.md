@@ -205,7 +205,7 @@ DeviceProcessEvents
 - **Timestamp:** 2025-10-09T12:51:44.3081129Z
 - **InitiatingProcessParentFileName** RuntimeBroker.exe
 - **SHA256:** `badf4752413cb0cbdc03fb95820ca167f0cdc63b597ccdb5ef43111180e088b0`
-💡 **Why it matters:** Confirming egress is a necessary precondition before any attempt to move data off-host.
+  **Why it matters:** Confirming egress is a necessary precondition before any attempt to move data off-host.
 
 **KQL Query Used:**
 ```
@@ -234,7 +234,8 @@ DeviceProcessEvents
 
 - **Initiating:** powershell.exe  
 - **SHA256:**
-💡 **Why it matters:** 
+💡 **Why it matters:**
+
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -260,7 +261,8 @@ DeviceProcessEvents
 - **Timestamp:**  2025-10-09T12:51:57.6866149Z 
 - **Process:**   tasklist /v
 - **SHA256:** be7241a74fe9a9d30e0631e41533a362b21c8f7aae3e5b6ad319cc15c024ec3f
-💡 **Why it matters:** A process inventory shows what's present and what to avoid or target for collection.
+  **Why it matters:** A process inventory shows what's present and what to avoid or target for collection.
+
 **KQL Query Used:**
 ```
 DeviceProcessEvents
@@ -273,24 +275,26 @@ DeviceProcessEvents
 
 ---
 
-🚩 **Flag 9 – Outbound Communication Test**  
-🎯 **Objective:** Catch network activity establishing contact outside the environment.  
-📌 **Finding (answer):** **.net** (TLD of unusual outbound domain)  
+🚩 **Flag 9 – Privilege Surface Check**  
+🎯 **Objective:** Detect attempts to understand privileges available to the current actor.
+📌 **Finding (answer):**2025-10-09T12:52:14.3135459Z
 🔍 **Evidence:**  
-- **Host:** gab-intrn-vm   
-- **Suspicious Domain:** `eo7j1sn715wkekj.m.pipedream.net` (amid mostly Microsoft `*.msedge.net`/`*.azureedge.net`)  
-💡 **Why it matters:** Non‑standard webhook/C2 infrastructure used as low‑profile beacon prior to exfiltration.
+- **Host:** gab-intrn-vm
+- **Timestamp:**  2025-10-09T12:52:14.3135459Z
+💡 **Why it matters:** Privilege mapping informs whether the actor proceeds as a user or seeks elevation.
+
 **KQL Query Used:**
 ```
-DeviceNetworkEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where RemoteUrl != ""
-| where RemoteUrl !contains ".com"
-| summarize Count = count() by RemoteUrl
-| sort by Count desc
+DeviceProcessEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated between (datetime(2025-10-06) .. datetime(2025-10-10))
+| where FileName in~ ("tasklist.exe","wmic.exe","netstat.exe","sc.exe","powershell.exe","pwsh.exe","cmd.exe","cscript.exe","wmic.exe")
+    or ProcessCommandLine has_any ("tasklist","/svc","/fo list","/v","process list","Get-Process","Get-Service","Get-WmiObject","Get-CimInstance","gwmi","gps","sc query","pslist","psinfo","procexp","handle.exe","listdlls","procmon")
+| project TimeGenerated, DeviceName, FileName, ProcessCommandLine, InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by TimeGenerated desc
+| take 200
 ```
-<img width="498" height="575" alt="Screenshot 2025-08-17 221558" src="https://github.com/user-attachments/assets/ff3a81e7-bcd1-43fb-a85c-169e54aeb922" />
+<img width="498" height="575" alt="Screenshot 2025-08-17 221558" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/6c3284e679e9a394a427924647763174e0533150/screen%20captures/Assistance-F9.png" />
 
 ---
 
