@@ -23,14 +23,14 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-09 12:50:39     | 4    | Quick sensitive-data probe                       | PowerShell clipboard access attempt (`Get-Clipboard`)          |
 | 2025-10-09 12:51:18     | 5    | Storage surface mapping                          | `wmic logicaldisk get name,freespace,size`                     |
 | 2025-10-09 12:51:44     | 6    | User/session enumeration                         | `qwinsta`, `quser`, `query session`                            |
-| 2025-10-09 12:51:44     | 7    | Repeated process enumeration sweep               | Multiple `tasklist` / `Get-Process` executions                 |
+| 2025-10-09 12:51:44     | 7    |  Interactive Session Discovery            | Multiple `tasklist` / `Get-Process` executions                 |
 | 2025-10-09 12:51:57     | 8    | Runtime application inventory                    | `tasklist /v`                                                   |
 | 2025-10-09 12:52:14     | 9    | Outbound network reachability test               |                   |
 | 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | DNS/HTTP request to `msftconnecttest[.]com`              |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
-| 2025-10-10 04:01:18     | 12   | Persistence established                          | DNS?HTTP request to `www[.]httpbin.org[.]com`                 |
-| 2025-10-10 04:05:02     | 13   | Persistence established                          | User-facing artifact (`.lnk`/log/readme) created and opened    |
-|    | 14   |        |             |
+| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS?HTTP request to `www[.]httpbin.org[.]com`                 |
+| 2025-10-10 04:05:02     | 13   |Scheduled task persistence                       | User-facing artifact (`.lnk`/log/readme) created and opened    |
+|                         | 14    |Registry autorun fallback                        |RemoteAssistUpdater                                            |
 | 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`
 
 
