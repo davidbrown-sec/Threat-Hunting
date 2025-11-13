@@ -38,7 +38,7 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-09 12:52:14     | 9    | Outbound network reachability test               | PowerShell DNS/HTTP request initiated                          |
 | 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | Connection to `msftconnecttest[.]com`                          |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
-| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin.org[.]com`                  |
+| 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin[.]org`                  |
 | 2025-10-10 04:05:02     | 13   | Scheduled task persistence                       | `SupportToolUpdater.ps1` executed via `/create /onlogon`       |
 | 2025-10-10 04:05:15     | 14   | Registry autorun fallback                        | `RemoteAssistUpdater` registry entry                           |
 | 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`                                          |
