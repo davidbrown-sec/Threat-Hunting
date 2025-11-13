@@ -303,7 +303,9 @@ DeviceProcessEvents
 
 🚩 **Flag 10 – Proof-of-Access & Egress Validation**  
 🎯 **Objective:** Find actions that both validate outbound reachability and attempt to capture host state for exfiltration value.
+
 📌 **Finding (answer):** `www[.]msftconnecttest[.]com`
+
 🔍 **Evidence:**  
 - **Host:** `gab-intrn-vm` 
 - **RemoteUrl:** `www[.]msftconnecttest[.]com`
