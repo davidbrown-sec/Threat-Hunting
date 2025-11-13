@@ -333,6 +333,7 @@ DeviceNetworkEvents
 - **Timestamp:** 2025-10-09T12:58:17.4364257Z 
 - **Value Name:** `ReconArtifacts.zip` → **C:\Users\Public\ReconArtifacts.zip**    
 - **Initiating Process:**  `RuntimeBroker.exe`  -> powershell.exe`
+  
 💡 **Why it matters:** Staging is the practical step that simplifies exfiltration and should be correlated back to prior recon.
 
 **KQL Query Used:**
@@ -349,104 +350,94 @@ DeviceFileEvents
 
 ---
 
-🚩 **Flag 12 – Targeted File Reuse / Access**  
-🎯 **Objective:** Surface the document that stood out in the attack sequence.  
-📌 **Finding (answer):** **Carlos Tanaka**  
+🚩 **Flag 12 –  **  
+🎯 **Objective:**   
 🔍 **Evidence:**  
-- **Host:** gab-intrn-vm   
-- **Repeated Access:** `Carlos.Tanaka-Evaluation.lnk` (count = 3) within HR artifacts list  
-💡 **Why it matters:** Personnel record of focus; aligns with promotion‑manipulation motive.
+- **Host:** gab-intrn-vm
+- **RemoteUrl:** `www[.]httpbin.org[.]com`
+- **RemoteIP:** `100[.]29[.]147[.]161`
+💡 **Why it matters:**
+
 **KQL Query Used:**
 ```
-DeviceEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| summarize Count = count() by FileName
-| sort by Count desc
+DeviceNetworkEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated > datetime(2025-10-09T12:52:14.3135459Z)
+| where InitiatingProcessCommandLine contains "powershell"
+| where ActionType in ("DnsQuery", "HttpRequest", "ConnectionSuccess")
+| project TimeGenerated, RemoteUrl, RemoteIP,  InitiatingProcessFileName, InitiatingProcessCommandLine, InitiatingProcessParentFileName
+| order by TimeGenerated asc
 ```
-<img width="434" height="767" alt="Screenshot 2025-08-17 222304" src="https://github.com/user-attachments/assets/273f916d-e5fe-40dc-924f-802f9724ebc7" />
+<img width="434" height="767" alt="Screenshot 2025-08-17 222304" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/5a05c5de86c3a527db92611d5b7f8de9a31f84c6/screen%20captures/Assistance-F12.png" />
 
 
 
 ---
 
 🚩 **Flag 13 – Candidate List Manipulation**  
-🎯 **Objective:** Trace tampering with promotion‑related data.  
-📌 **Finding (answer):** **SHA1 = 65a5195e9a36b6ce73fdb40d744e0a97f0aa1d34**  
-🔍 **Evidence:**  
-- **File:** `PromotionCandidates.csv`  
+🎯 **Objective:**  
+📌 **Finding (answer):**   
+🔍 **Evidence:**   
 - **Host:** gab-intrn-vm  
-- **Timestamp:** 2025-07-18 16:14:36 (first **FileModified**)  
-- **Path:** `C:\HRTools\PromotionCandidates.csv`  
-- **Initiating:** `"NOTEPAD.EXE" C:\HRTools\PromotionCandidates.csv`  
-💡 **Why it matters:** Confirms direct manipulation of structured HR data driving promotion decisions.
+- **Timestamp:** 2025-07-18 16:14:36
+- **Initiating:** 
+💡 **Why it matters:** 
 **KQL Query Used:**
 ```
-DeviceFileEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where FolderPath contains "HR"
-| summarize Count = count() by FileName
-| sort by Count desc
-
+​​DeviceProcessEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated > datetime(2025-10-09T12:52:14.3135459Z)
+| where tolower(ProcessCommandLine) contains "/create"
+   and tolower(ProcessCommandLine) contains "onlogon"
+| project TimeGenerated, ProcessCommandLine
+| order by TimeGenerated asc
 ```
-<img width="495" height="468" alt="Screenshot 2025-08-17 223219" src="https://github.com/user-attachments/assets/ce206008-93b6-48c1-a99c-2868db039031" />
-
-**KQL Query Used:**
-```
-DeviceFileEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where FileName == "PromotionCandidates.csv"
-| project Timestamp, DeviceName, ActionType, FileName, FolderPath, SHA1, InitiatingProcessCommandLine
-
-```
-<img width="1880" height="433" alt="Screenshot 2025-08-17 223349" src="https://github.com/user-attachments/assets/f31b2be7-75d2-4dac-b491-8006c9f342b4" />
-
-
----
-
-🚩 **Flag 14 – Audit Trail Disruption**  
-🎯 **Objective:** Detect attempts to impair system forensics.  
-📌 **Finding (answer):** **2025-07-19T05:38:55.6800388Z** (first log‑clear attempt)  
-🔍 **Evidence:**  
-- **Host:** gab-intrn-vm  
-- **Process:** `wevtutil.exe`  
-- **Command:** `"wevtutil.exe" cl Security` (+ additional clears shortly after)  
-- **SHA256:** `0b732d9ad576d1400db44edf3e750849ac481e9bbaa628a3914e5eef9b7181b0`  
-💡 **Why it matters:** Clear Windows Event Logs → destroys historical telemetry; classic anti‑forensics.
-**KQL Query Used:**
-```
-DeviceProcessEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where ProcessCommandLine contains "wevtutil"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, ProcessCreationTime,InitiatingProcessCommandLine , InitiatingProcessCreationTime, SHA256
-```
-<img width="1263" height="773" alt="Screenshot 2025-08-17 223624" src="https://github.com/user-attachments/assets/af5db852-e1c5-4ff3-8919-aef0a6baa225" />
+<img width="495" height="468" alt="Screenshot 2025-08-17 223219" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/94ee3ff9cde27dae632e847f783c8974072381a9/screen%20captures/Assistance-F13.png" />
 
 
 
 ---
 
-🚩 **Flag 15 – Final Cleanup and Exit Prep**  
-🎯 **Objective:** Capture the combination of anti‑forensics actions signaling attacker exit.  
-📌 **Finding (answer):** **2025-07-19T06:18:38.6841044Z**  
+🚩 **Flag 14 – **  
+🎯 **Objective:**   
+📌 **Finding (answer):**   
 🔍 **Evidence:**  
-- **File:** `EmptySysmonConfig.xml`  
-- **Path:** `C:\Temp\EmptySysmonConfig.xml`  
-- **Host:** gab-intrn-vm · **Initiating:** powershell.exe  
-💡 **Why it matters:** Blinds Sysmon to suppress detection just prior to exit; ties off anti‑forensics chain.
+- **Host:** gab-intrn-vm  
+- **Process:** `  
+- **Command:** `
+- **SHA256:** `  
+💡 **Why it matters:** 
+**KQL Query Used:**
+```
+
+```
+<img width="1263" height="773" alt="Screenshot 2025-08-17 223624" src="" />
+
+
+
+---
+
+🚩 **Flag 15 – Planted Narrative / Cover Artifact**  
+🎯 **Objective:** Identify a narrative or explanatory artifact intended to justify the 
+📌 **Finding (answer):**  SupportChat_log.lnk
+🔍 **Evidence:**  
+- **File:** `SupportChat_log.lnk`
+- **Timestamp:** `2025-10-09T13:02:41.5698148Z`
+- **Path:** `C:\Users\g4bri3lintern\AppData\Roaming\Microsoft\Windows\Recent\SupportChat_log.lnk`
+- **SHA256** `3d612fb329f4278d7d1c36c5859797bbe30dca318e27bd2afdf69b1c42198809`
+- **Host:** gab-intrn-vm
+- 
+💡 **Why it matters:** A planted explanation is a classic misdirection. The sequence and context reveal deception more than the text itself.
+
 **KQL Query Used:**
 ```
 DeviceFileEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where FileName in ("ConsoleHost_history.txt","EmptySysmonConfig.xml","HRConfig.json")
-| sort by Timestamp desc
-| project Timestamp, DeviceName, FileName, FolderPath, InitiatingProcessCommandLine
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated > datetime(2025-10-06T12:52:14.3135459Z)
+| where FileName matches regex @"(?i)(temp|readme|log|cover|report)\.(txt|csv|docx|lnk)"
+| project TimeGenerated, FileName, InitiatingProcessCommandLine,SHA256, FolderPath
 ```
-<img width="445" height="233" alt="Screenshot 2025-08-17 224226" src="https://github.com/user-attachments/assets/6334babb-6839-4281-b025-74346f5623e9" />
+<img width="445" height="233" alt="Screenshot 2025-08-17 224226" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/4567529fc8acf0be80499e690a7805ce7a7089da/screen%20captures/Assistance-F15.png" />
 
 
 ---
