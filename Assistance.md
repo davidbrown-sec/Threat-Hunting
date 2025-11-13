@@ -39,7 +39,8 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 | 2025-10-09 12:52:30     | 10   | Continued DNS/HTTP outbound activity             | DNS/HTTP request to `msftconnecttest[.]com`              |
 | 2025-10-09 12:58:17     | 11   | Staging of collected artifacts                   | `ReconArtifacts.zip` created in `C:\Users\Public\`             |
 | 2025-10-10 04:01:18     | 12   | Outbound destination (simulated upload)          | DNS/HTTP request to `www[.]httpbin.org[.]com`                 |
-| 2025-10-10 04:05:02     | 13   |Scheduled task persistence                       | User-facing artifact (`.lnk`/log/readme) created and opened    |
+| 2025-10-10 04:05:02     | 13   |Scheduled task persistence                       | SupportToolUpdater.ps1
+                          |
 |                         | 14    |Registry autorun fallback                        |RemoteAssistUpdater                                            |
 | 2025-10-12 15:40:12     | 15   | Planted narrative / justification                | `SupportChat_log.lnk`
 
@@ -383,12 +384,13 @@ DeviceNetworkEvents
 
 🚩 **Flag 13 – Candidate List Manipulation**  
 🎯 **Objective:**  
-📌 **Finding (answer):**   
+📌 **Finding (answer):** SupportToolUpdater.ps1
 🔍 **Evidence:**   
 - **Host:** gab-intrn-vm  
-- **Timestamp:** 2025-07-18 16:14:36
-- **Initiating:** 
+- **Timestamp:** 2025-10-09T13:01:28.7700443Z
+- **Procsess Comand Line:** `"schtasks.exe" /Create /SC ONLOGON /TN SupportToolUpdater /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\g4bri3lintern\Downloads\SupportTool.ps1"" /RL LIMITED /F`
 💡 **Why it matters:** 
+
 **KQL Query Used:**
 ```
 ​​DeviceProcessEvents
