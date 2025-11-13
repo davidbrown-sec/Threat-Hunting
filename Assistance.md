@@ -423,19 +423,96 @@ DeviceFileEvents
 ---
 
 ## MITRE ATT&CK (Quick Map)
-- **Execution:** T1059 (PowerShell) – Flags 1–5, 7–8  
-- **Persistence:** T1547.001 (Run Keys) – Flag 11  
-- **Discovery:** T1033/T1087 (whoami /all; group/user discovery) – Flags 1–3, 4  
-- **Credential Access:** T1003.001 (LSASS dump) – Flag 7 (MiniDump via comsvcs.dll)  
-- **Command & Control / Exfil:** T1071/T1041 – Flags 9–10 (pipedream.net, .net TLD, IP 52.54.13.125)  
-- **Defense Evasion:** T1562.001/002 & T1070.001 – Flags 5–6 (Defender), 14–15 (log clear, Sysmon blind)
 
----
+### Execution
+- **T1059.001 – PowerShell**: Used for script execution, clipboard probing, network checks, tool downloads, and file staging.  
+  *Flags 1, 2, 3, 5, 6, 9, 10, 11*
+- **T1059.003 – Windows Command Shell**: Recon commands executed via `cmd.exe` (e.g., `qwinsta`, `wmic`, `tasklist`).  
+  *Flags 4, 5, 7, 8*
 
-## Recommended Actions (Condensed)
-1. Reset/rotate credentials (HR/IT/admin).  
-2. Re-enable & harden Defender; deploy fresh Sysmon config.  
-3. Block/monitor `*.pipedream.net` and related IPs (e.g., **52.54.13.125**).  
-4. Integrity review/restore HR data (`PromotionCandidates.csv`, Carlos Tanaka records).  
-5. Hunt for persistence across estate; remove `OnboardTracker.ps1` autoruns.  
-6. Centralize logs; add detections for `comsvcs.dll, MiniDump` and Defender tamper.
+### Persistence
+- **T1053.005 – Scheduled Task (OnLogon)**: Logon-triggered scheduled task created as backup persistence.  
+  *Flag 12 / 13*
+
+### Defense Evasion
+- **T1562.001 – Impair Defenses (Disable/Bypass Defender)**: Tamper-related artifact (`DefenderTamperArtifact.lnk`) suggesting spoofed or manipulated security posture.  
+  *Flag 2*
+- **T1070.004 – File Deletion / Cleanup Artifacts**: Temporary/log/readme artifacts created to mask activity or justify operations.  
+  *Flags 14–15*
+
+### Discovery
+- **T1082 – System Information Discovery**: Commands enumerating host environment (`tasklist`, `wmic logicaldisk`, process scans).  
+  *Flags 4, 5, 7, 8*
+- **T1057 – Process Discovery**: Repeated process enumeration (`tasklist /v`, `Get-Process`).  
+  *Flags 5, 7, 8*
+- **T1012 – Query System/Registry Info**: `wmic logicaldisk` and system mapping used to identify storage targets.  
+  *Flag 5*
+- **T1087.001 – Account Discovery (Local)**: Session/user enumeration via `query session`, `qwinsta`, `quser`.  
+  *Flags 4–5*
+- **T1049 – System / Network Connections Discovery**: DNS and HTTP reachability checks to validate outbound capability.  
+  *Flags 9–10*
+
+### Credential Access
+- **T1056.001 – Input/Clipboard Collection**: Attempts to capture clipboard data via PowerShell.  
+  *Flag 3*
+
+### Command & Control
+- **T1071.001 – Web Protocols**: PowerShell web requests to external domains (e.g., `msftconnecttest.com`, `httpbin.org.com`).  
+  *Flags 9–10, 12*
+- **T1105 – Ingress Tool Transfer**: Suspicious executables downloaded via `Invoke-WebRequest`, `curl`, and related utilities.  
+  *Flags 1–3*
+
+### Collection
+- **T1560.001 – Archive Collected Data**: `ReconArtifacts.zip` created for staging collected items.  
+  *Flag 11*
+
+### Exfiltration
+- **T1041 – Exfiltration Over C2 Channel**: DNS and HTTP communication indicating preparation for or execution of outbound transfer.  
+  *Flags 10–12*
+
+
+## Recommended Actions
+
+### 1. Containment & Remediation
+- Remove malicious scheduled tasks created with `/create` and `onlogon`.
+- Delete staged artifacts such as `ReconArtifacts.zip` and suspicious “support/help” executables.
+- Consider rebuilding affected user profiles if persistent anomalies remain.
+
+### 2. Credential Reset & Hygiene
+- Rotate credentials for `g4bri3lintern` and any associated IT/HR/admin accounts touched during activity.
+- Review authentication logs for suspicious logins or privilege elevation attempts.
+
+### 3. Defender & Logging Hardening
+- Re-enable all Microsoft Defender protections and ensure tamper protection is active.
+- Add detections for:
+  - PowerShell running with bypassed execution policies (e.g., `-ExecutionPolicy Unrestricted`, `-ExecutionPolicy Bypass`)
+  - Clipboard access via PowerShell
+  - Scheduled task creation with logon triggers
+- Verify Sysmon is logging process, file, and network activity with a hardened configuration.
+
+### 4. Network Security Controls
+- Block or closely monitor outbound connections to:
+  - `httpbin.org.com`
+  - Any unrecognized or suspicious IP addresses
+  - Abused test domains if identified (e.g., `msftconnecttest.com`)
+- Create alerts for outbound PowerShell `Invoke-WebRequest` or `curl` activity from user context.
+
+### 5. Enterprise-Wide Threat Hunt
+- Hunt across all machines for:
+  - Support/help/desk/tool executables in user directories
+  - Clipboard probing commands
+  - Recon patterns (`qwinsta`, `wmic`, `tasklist`) in short bursts
+  - Scheduled tasks using similar naming or logon triggers
+- Validate whether adversary activity spread beyond `gab-intern-vm`.
+
+### 6. Data Integrity Review
+- Review HR-related and other sensitive files for unauthorized edits or staging attempts.
+- Inspect ZIP or CSV artifacts for unusual modification timestamps or creators.
+- Determine whether any outbound data transfer succeeded.
+
+### 7. User Awareness & Training
+- Provide targeted training for interns and non-technical staff on recognizing:
+  - Fake or unsolicited “support tools”
+  - Suspicious `.lnk` files
+  - Unexpected Defender tamper alerts
+- Reinforce the importance of promptly reporting unusual system behavior.
