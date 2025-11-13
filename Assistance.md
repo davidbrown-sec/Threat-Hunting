@@ -15,7 +15,7 @@ On the workstation gab-intern-vm, during the period of October 1–15, 2025, mul
 
 ## Timeline of Adversary Activity (gab-intern-vm)
 
-| Time (UTC)              | Flag | Action Observed                                 | Key Evidence (Concise)                                         |
+| Time (UTC)              | Flag | Action Observed                                 | Key Evidence (Concise)                                        |
 |-------------------------|------|--------------------------------------------------|-----------------------------------------------------------------|
 | 2025-10-06 12:13:22     | 1    | Initial Execution Detection                      | “-ExecutionPolicy used to run commands      
           |
