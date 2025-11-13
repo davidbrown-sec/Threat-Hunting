@@ -325,25 +325,26 @@ DeviceNetworkEvents
 
 ---
 
-🚩 **Flag 11 – Persistence via Local Scripting**  
-🎯 **Objective:** Verify if unauthorized persistence was established via legacy tooling.  
-📌 **Finding (answer):** File name tied to Run‑key value = **OnboardTracker.ps1**  
+🚩 **Flag 11 – Bundling / Staging Artifacts**  
+🎯 **Objective:** Detect consolidation of artifacts into a single location or package for transfer.  
+📌 **Finding (answer):** Full folder path = **C:\Users\Public\ReconArtifacts.zip**  
 🔍 **Evidence:**  
 - **Host:** gab-intrn-vm  
-- **Timestamp:** 2025-07-18T15:50:36Z  
-- **Registry:** `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`  
-- **Value Name:** `HRToolTracker` → **C:\HRTools\LegacyAutomation\OnboardTracker.ps1**  
-- **Initiating Process:** PowerShell `New-ItemProperty ... -Force`  
-💡 **Why it matters:** Ensures re‑execution at logon; disguised as HR “Onboarding” tool.
+- **Timestamp:** 2025-10-09T12:58:17.4364257Z 
+- **Value Name:** `ReconArtifacts.zip` → **C:\Users\Public\ReconArtifacts.zip**    
+- **Initiating Process:**  RuntimeBroker.exe`  -> powershell.exe
+💡 **Why it matters:** Staging is the practical step that simplifies exfiltration and should be correlated back to prior recon.
 **KQL Query Used:**
 ```
-DeviceRegistryEvents
-| where Timestamp between (datetime(2025-07-18) .. datetime(2025-07-31))
-| where DeviceName contains "nathan-iel-vm"
-| where InitiatingProcessCommandLine contains "-c"
-| project Timestamp, DeviceName, ActionType, RegistryKey, RegistryValueName, RegistryValueData, InitiatingProcessCommandLine
+DeviceFileEvents
+| where DeviceName == "gab-intern-vm"
+| where TimeGenerated > datetime(2025-10-09T12:52:14.3135459Z)
+| where InitiatingProcessCommandLine contains "powershell"
+| where ActionType in ("FileCreated", "FileRenamed", "FileCopied")
+| project TimeGenerated, FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessCommandLine,InitiatingProcessParentFileName, SHA256
+| order by TimeGenerated asc
 ```
-<img width="1643" height="231" alt="Screenshot 2025-08-17 222159" src="https://github.com/user-attachments/assets/2b76f134-956d-448c-8c57-c8c55a5bfc73" />
+<img width="1643" height="231" alt="Screenshot 2025-08-17 222159" src="https://github.com/davidbrown-sec/Threat-Hunting/blob/70b0bc01411e3bcc737bfdca521eaeb3b2037332/screen%20captures/Assistance-F11.png" />
 
 ---
 
