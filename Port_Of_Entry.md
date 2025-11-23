@@ -638,8 +638,3 @@ DeviceNetworkEvents
    - Train staff to recognize and report unexpected remote sessions and post-incident anomalies.
 
 ---
-
-> 💡 **How to use this README:**  
-> - Save this file as `README.md` into your GitHub threat-hunting repo.  
-> - Replace the `./flag-*.png` paths with your actual screenshot locations (e.g., `/screen captures/Flag 15.png`).  
-> - Optionally add architecture diagrams or additional KQL appendices as your hunting tradecraft evolves.
