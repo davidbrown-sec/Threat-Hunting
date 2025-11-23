@@ -20,33 +20,7 @@ This report documents the hunt, KQL used, and flag-level findings for all 20 cha
 
 ## Executive Summary
 
-During 19 November 2025, attacker activity on `AZUKI-SL` followed a classic cloud-hosted Windows compromise pattern:
 
-1. **Initial Access**
-   - External RDP access originated from **88.97.178.12** into user **`kenji.sato`**, establishing an interactive session on `AZUKI-SL`. *(Flags 1–2)*  
-
-2. **Discovery & Staging**
-   - Network reconnaissance with `"ARP.EXE" -a` ran on multiple Azuki systems to map neighboring hosts. *(Flag 3 – see screenshot placeholder below).*  
-   - A dedicated malware staging directory **`C:\ProgramData\WindowsCache`** was created and later used for tools and archives. *(Flag 4)*  
-
-3. **Defense Evasion**
-   - **Windows Defender exclusions** were added for `.exe`, `.ps1`, and `.bat` extensions and for the temp path `C:\Users\KENJI~1.SAT\AppData\Local\Temp`, allowing execution and storage of malicious binaries and scripts without scanning. *(Flags 5–6 – registry screenshots)*  
-
-4. **Tooling & C2**
-   - The attacker used **`certutil.exe`** to download tooling from **78.141.196.6** over port **443**, likely into `C:\ProgramData\WindowsCache`. *(Flags 7, 10, 11)*  
-   - A short-named credential dumping binary **`mm.exe`** executed from the staging directory together with **mimikatz module `sekurlsa::logonpasswords`**. *(Flags 12–13)*  
-
-5. **Collection & Exfiltration**
-   - Collected data was compressed into **`export-data.zip`** in `C:\ProgramData\WindowsCache`. *(Flag 14)*  
-   - The archive was exfiltrated via **`curl.exe`** to a **Discord webhook** endpoint, abusing Discord as an exfiltration channel. *(Flag 15 – screenshot placeholder)*  
-
-6. **Anti-Forensics & Impact**
-   - **`wevtutil.exe`** was used to clear **Security**, **System**, and **Application** logs — with **Security** cleared first — to remove forensic traces. *(Flag 16 – screenshot placeholder)*  
-   - A backdoor local Administrator account **`support`** was created and added to `Remote Desktop Users` and `Administrators`, ensuring durable access even if the original compromise vector is closed. *(Flag 17 – screenshot placeholder)*  
-   - A PowerShell script **`wupdate.ps1`** orchestrated downloading tools, staging data, and exfiltration. *(Flag 18 – screenshot placeholder)*  
-   - `cmdkey` and `mstsc.exe` were used with target **10.1.0.188**, showing attempted lateral movement deeper into Azuki’s environment. *(Flags 19–20)*  
-
-Overall, the intrusion demonstrates effective use of **living-off-the-land binaries (LOLBins)**, Defender misconfiguration, and commodity cloud services to blend into normal activity while still leaving enough telemetry to fully reconstruct the attack.
 
 ---
 
